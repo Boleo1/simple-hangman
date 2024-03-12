@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color:blanchedalmond;
+  font-family:Verdana, Arial, sans-serif;
+  background-repeat: no-repeat;
+  background-image: url(HIMG/hangmanbg.jpg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+main {
+  background-color: #b3c9f4;
+  opacity: 80%;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #000;
+}
+header h1 {
+  margin-bottom: 20px;
+}
+#textform {
+  margin-bottom:20px
+}
+#textform input[type="button"] {
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+#hangman {
+  margin: 20px 0;
+}
+#hangman img {
+  max-width: 100%;
+  height: auto;
+}

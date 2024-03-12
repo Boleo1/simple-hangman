@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+<title>JS Fun</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<script type = "text/javascript">
+
+function btnGuess_onclick() {
+  var guess = document.getElementById("userTxt").value;
+  var strAddr = window.location.href;
+  guess = guess.trim().toLowerCase();
+
+  if (strAddr.indexOf("?") == -1) {
+    strAddr = strAddr + "?rong=";
+  }
+  if (isValid(guess)) {
+    if (seekrit.includes(guess)) {
+      rite += guess;
+    } 
+    else {
+      rong += guess;
+    }
+  if (rong.length >= 11) {
+    rite = "";
+    rong = "";
+    printIMG(0)
+  }
+
+pos = strAddr.indexOf("rong=")
+nuAddr = strAddr.substr(0, pos+5) + rong.length;
+nuAddr = setVar(nuAddr, "rite", rite);
+nuAddr = setVar(nuAddr,"rong", rong);
+window.location.href = nuAddr;
+  }
+}
+
+
+function printIMG(num) {  // print hangman function
+  document.write("<img src='HIMG/H" + num + ".GIF'><br/>");
+}
+function setVar(addr, key, val) {
+  var tmp = addr;
+  var blnQuest = tmp.indexOf("?") > -1;
+  var pos, pos2;
+
+  key = key.toLowerCase();
+
+  if (blnQuest) { // if '?' exists in the URL
+    pos = tmp.toLowerCase().indexOf(key + "=");
+    if (pos > -1) { // if key exists in the URL
+      pos += key.length + 1; // position of the value
+      pos2 = tmp.indexOf("&", pos);
+      if (pos2 > -1) { // if '&' exists after the key
+        tmp = tmp.substring(0, pos) + val + tmp.substring(pos2);
+      } else { // if the key is the last parameter
+        tmp = tmp.substring(0, pos) + val;
+      }
+    } 
+    else { // if key does not exist, add to the end
+      tmp += addr + "&" + key + "=" + val;
+    }
+  } 
+  else { // if no '?' in the URL, add it with the key-value pair
+    tmp += addr + "?" + key + "=" + val;
+  }
+  return tmp;
+}
+
+function getVar(addr, key) {
+  var tmp = addr;
+  var pos, pos2, varname, varval;
+
+  pos = tmp.indexOf("?");    // are there vars
+  if (pos == -1)
+    tmp = "";
+  else
+    tmp = tmp.substring(pos+1);
+
+  while (tmp.length > 0)  {
+    pos = tmp.indexOf("=");    // get var name
+    varname = tmp.substring(0, pos);
+
+    pos2 = tmp.indexOf("&");    // get var value
+    if (pos2 == -1) {            // if at end of string. or no vars
+      varval = tmp.substring(pos+1);
+      tmp = "";
+    }
+    else {                      // if not last var
+      varval = tmp.substring(pos+1, pos2);
+      tmp = tmp.substring(pos2+1);    // discard processed string
+    }
+    // document.write(varname + ": " + varval + "<br />");    // print results
+    if (key == varname)
+      return varval;
+  }
+  return "";
+}
+
+function wordBlendr(wrd1, wrd2)  { // START BLENDER 
+  var pos;
+  var ary = new Array();
+  len2 = wrd2.length; len1 = wrd1.length;
+  ary.length = len1;
+  for (i=0; i < len1; i++) {  // initialize ary
+    ary[i] = "*";
+  }
+  for (i=0; i < len2; i++) {  // For each char in word2
+    char = wrd2.charAt(i);    // get char
+    pos = wrd1.indexOf(char); // get its position
+    while (pos != -1) {
+      ary[pos] = char;
+      pos = seekrit.indexOf(char, pos+1); // get new position
+    }
+  }
+
+  for (i=0; i < len1; i++) {
+    document.write(ary[i]);
+  }
+} // END BLENDER
+
+function isValid(userTxt) {
+  if (userTxt.length !== 1) {
+    alert("Please enter a single character.");
+    return false;
+  }
+
+  var charCode = userTxt.toLowerCase().charCodeAt(0);
+  if (charCode >= 97 && charCode <= 122) {
+    return true;
+  } else {
+    alert("Please enter an alphabetic character");
+    return false;
+  }
+}
+
+</script>
+
+</head>
+<body>
+<main>
+  <header>
+    <h1>Hangman</h1>
+  </header>
+<div id="hangman">
+<script type = "text/javascript">
+  var strAddr, pos, seekrit;
+  var seekrit = "permeable";
+  var rite = "";
+  var rong = "";
+  
+  strAddr = window.location.href;
+  rite = getVar(strAddr, "rite");
+  rong = getVar(strAddr, "rong");
+  if (rong.length >=10) {
+    document.write("<b>You lose!</b><br><br>")
+  }
+  else {
+    if (strAddr.indexOf("?") == -1) {
+      printIMG(0);
+    }
+    else {
+      pos = strAddr.indexOf("Wrong letters:");
+      printIMG(parseInt(rong.length + 0));
+    }
+  }
+  wordBlendr(seekrit, rite);
+  document.write("<br><br>Correct letters: " + rite);
+  document.write("<br>Incorrect letters: " + rong)
+</script>
+<div id="textform">
+  <form action ="" name = "form1">   <!-- Create Form, with button-->
+    <input type="text" id="userTxt" placeholder="Enter your guess" maxlength="1">
+    <input type="button" value="Click Me" name="btnClik" onclick= btnGuess_onclick() />
+  </form>
+</div>
+</main>
+</body>
+</html>
